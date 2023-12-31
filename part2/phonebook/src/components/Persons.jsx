@@ -1,8 +1,26 @@
+import service from "../services/notes";
+
 export const Persons = (props) => {
-  const { persons, searchName } = props;
+  const { persons, setPersons, searchName } = props;
+
+  const handleDelete = (id) => {
+    const message = `Delete ${id}`;
+
+    if (window.confirm(message)) {
+      service.delete(id);
+      service.getAll().then((data) => setPersons(data));
+    }
+  };
+
+  const filteredPersons = Array.isArray(persons)
+    ? persons.filter((person) =>
+        person.name.toLowerCase().includes(searchName.toLowerCase())
+      )
+    : [];
+
   return (
     <div>
-      {persons
+      {filteredPersons
         .filter((person) =>
           person.name.toLowerCase().includes(searchName.toLowerCase())
         )
@@ -13,6 +31,9 @@ export const Persons = (props) => {
                 <tr>
                   <td>{person.name}</td>
                   <td>{person.number}</td>
+                  <td>
+                    <button onClick={handleDelete(person.id)}>Delete</button>
+                  </td>
                 </tr>
               </tbody>
             </table>
