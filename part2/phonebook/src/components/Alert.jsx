@@ -1,10 +1,9 @@
 export const Alert = ({ message, error = false }) => {
+  const alertClass = error ? "error" : "message";
+
   if (message) {
-    if (error) {
-      return <div className="error">{message}</div>;
-    } else {
-      return <div className="message">{message}</div>;
-    }
+    return <div className={alertClass}>{message}</div>;
   }
+
   return null;
 };

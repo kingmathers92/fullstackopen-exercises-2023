@@ -1,4 +1,3 @@
-// App.js
 import { useState, useEffect } from "react";
 import { Filter } from "./components/Filter";
 import { Persons } from "./components/Persons";
@@ -32,6 +31,21 @@ const App = () => {
     setNewNumber(e.target.value);
   };
 
+  const showNotification = (text, isError = false) => {
+    if (isError) {
+      setErrorMessage(text);
+      setMessage(null);
+    } else {
+      setMessage(text);
+      setErrorMessage(null);
+    }
+
+    setTimeout(() => {
+      setMessage(null);
+      setErrorMessage(null);
+    }, 3000);
+  };
+
   const handleSubmitForm = (e) => {
     e.preventDefault();
 
@@ -52,13 +66,21 @@ const App = () => {
           .update(match.id, newPerson)
           .then(() => {
             service.getAll().then((data) => setPersons(data));
-            setMessage(`Updated ${newName}'s number`);
-            setTimeout(() => setMessage(null), 3000);
+            showNotification(`Updated ${newName}'s number`);
             setNewName("");
             setNewNumber("");
           })
           .catch((error) => {
-            setErrorMessage(error.response.data.error);
+            if (error.response && error.response.status === 404) {
+              // Person not found on the server, show error message
+              setErrorMessage(`${newName} not found on the server.`);
+              console.error(
+                `Error: ${newName} not found on the server.`,
+                error
+              );
+            } else {
+              setErrorMessage(error.response.data.error);
+            }
             setTimeout(() => setErrorMessage(null), 3000);
           });
       }
@@ -67,14 +89,12 @@ const App = () => {
         .create(newPerson)
         .then(() => {
           service.getAll().then((data) => setPersons(data));
+          showNotification(`Added ${newName}`);
           setNewName("");
           setNewNumber("");
-          setMessage(`Added ${newName}`);
-          setTimeout(() => setMessage(null), 3000);
         })
         .catch((error) => {
-          setErrorMessage(error.response.data.error);
-          setTimeout(() => setErrorMessage(null), 3000);
+          showNotification(error.response.data.error, true);
         });
     }
   };
