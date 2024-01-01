@@ -2,7 +2,7 @@ export const PersonForm = (props) => {
   const {
     handleSubmitForm,
     newName,
-    number,
+    newNumber,
     handleNameChange,
     handleNumberChange,
   } = props;
@@ -14,7 +14,7 @@ export const PersonForm = (props) => {
           name: <input value={newName} onChange={handleNameChange} />
         </div>
         <div>
-          number: <input value={number} onChange={handleNumberChange} />
+          number: <input value={newNumber} onChange={handleNumberChange} />
         </div>
         <div>
           <button type="submit">add</button>

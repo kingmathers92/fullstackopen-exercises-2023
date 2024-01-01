@@ -6,7 +6,7 @@ export const Filter = (props) => {
   };
   return (
     <div>
-      <input value={searchName} onChange={handleSearchChange} />
+      Search: <input value={searchName} onChange={handleSearchChange} />
     </div>
   );
 };

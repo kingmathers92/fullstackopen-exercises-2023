@@ -1,44 +1,30 @@
-import service from "../services/notes";
+import { Person } from "./Person";
 
 export const Persons = (props) => {
-  const { persons, setPersons, searchName } = props;
-
-  const handleDelete = (id) => {
-    const message = `Delete ${id}`;
-
-    if (window.confirm(message)) {
-      service.delete(id);
-      service.getAll().then((data) => setPersons(data));
-    }
-  };
-
-  const filteredPersons = Array.isArray(persons)
-    ? persons.filter((person) =>
-        person.name.toLowerCase().includes(searchName.toLowerCase())
-      )
-    : [];
+  const { persons, searchName, setPersons } = props;
 
   return (
     <div>
-      {filteredPersons
-        .filter((person) =>
-          person.name.toLowerCase().includes(searchName.toLowerCase())
-        )
-        .map((person) => (
-          <div key={person.id}>
-            <table>
-              <tbody>
-                <tr>
-                  <td>{person.name}</td>
-                  <td>{person.number}</td>
-                  <td>
-                    <button onClick={handleDelete(person.id)}>Delete</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        ))}
+      <table>
+        <tbody>
+          {persons.map((person) => {
+            if (
+              searchName.length === 0 ||
+              person.name.search(searchName) !== -1
+            ) {
+              return (
+                <Person
+                  key={person.id}
+                  person={person}
+                  setPersons={setPersons}
+                />
+              );
+            } else {
+              return null;
+            }
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };

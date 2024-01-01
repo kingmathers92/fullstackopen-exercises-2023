@@ -1,21 +1,27 @@
+// App.js
 import { useState, useEffect } from "react";
 import { Filter } from "./components/Filter";
 import { Persons } from "./components/Persons";
 import { PersonForm } from "./components/PersonForm";
 import { Alert } from "./components/Alert";
-import service from "./services/notes";
+import { Title } from "./components/Title";
+import service from "./services/persons.js";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
-  const [number, setNumber] = useState("");
+  const [newNumber, setNewNumber] = useState("");
   const [searchName, setSearchName] = useState("");
   const [message, setMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     console.log("effect");
-    service.getAll().then((data) => setPersons(data));
+    service.getAll().then((data) => {
+      if (Array.isArray(data)) {
+        setPersons(data);
+      }
+    });
   }, []);
 
   const handleNameChange = (e) => {
@@ -23,70 +29,87 @@ const App = () => {
   };
 
   const handleNumberChange = (e) => {
-    setNumber(e.target.value);
+    setNewNumber(e.target.value);
   };
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
 
-    const nameExists = persons.some((person) => person.name === newName);
-    const newObject = {
+    const newPerson = {
       name: newName,
-      number: number,
+      number: newNumber,
     };
 
-    if (nameExists) {
-      const message = `${newName} is already added to phonebook, replace the old number with a new one?`;
-      if (window.confirm(message)) {
+    const match = persons.find(
+      (person) => person.name.toUpperCase() === newName.toUpperCase()
+    );
+
+    if (match) {
+      const confirmMessage = `${newName} is already added to the phonebook. Replace the old number with a new one?`;
+
+      if (window.confirm(confirmMessage)) {
         service
-          .update(nameExists.id, newObject)
+          .update(match.id, newPerson)
           .then(() => {
             service.getAll().then((data) => setPersons(data));
-            setMessage(`Added ${newName}`);
-            setMessage(null);
+            setMessage(`Updated ${newName}'s number`);
+            setTimeout(() => setMessage(null), 3000);
+            setNewName("");
+            setNewNumber("");
           })
           .catch((error) => {
             setErrorMessage(error.response.data.error);
-            setErrorMessage(null);
+            setTimeout(() => setErrorMessage(null), 3000);
           });
       }
     } else {
       service
-        .create(newObject)
+        .create(newPerson)
         .then(() => {
           service.getAll().then((data) => setPersons(data));
           setNewName("");
+          setNewNumber("");
           setMessage(`Added ${newName}`);
-          setMessage(null);
+          setTimeout(() => setMessage(null), 3000);
         })
         .catch((error) => {
           setErrorMessage(error.response.data.error);
-          setErrorMessage(null);
+          setTimeout(() => setErrorMessage(null), 3000);
         });
     }
   };
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <Title name={"Phonebook"} />
       {message && <Alert message={message} />}
       {errorMessage && <Alert message={errorMessage} error={true} />}
-      <Filter searchName={searchName} setSearchName={setSearchName} />
-      <PersonForm
-        handleSubmitForm={handleSubmitForm}
-        newName={newName}
-        setNewName={setNewName}
-        number={number}
-        setNumber={setNumber}
-        handleNameChange={handleNameChange}
-        handleNumberChange={handleNumberChange}
-      />
-      <h2>Numbers</h2>
-      <Persons
-        persons={persons}
-        searchName={searchName}
-        setPersons={setPersons}
-      />
+      <div>
+        <Filter searchName={searchName} setSearchName={setSearchName} />
+      </div>
+
+      <div>
+        <Title name={"Add a new"} />
+        <PersonForm
+          handleSubmitForm={handleSubmitForm}
+          newName={newName}
+          setNewName={setNewName}
+          newNumber={newNumber}
+          setNewNumber={setNewNumber}
+          handleNameChange={handleNameChange}
+          handleNumberChange={handleNumberChange}
+        />
+      </div>
+
+      <div>
+        <Title name={"Numbers"} />
+        <Persons
+          persons={persons}
+          searchName={searchName}
+          setPersons={setPersons}
+          setErrorMessage={setErrorMessage}
+        />
+      </div>
     </div>
   );
 };

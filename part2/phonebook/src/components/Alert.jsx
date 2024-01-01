@@ -1,4 +1,4 @@
-export const Alert = (message, error = false) => {
+export const Alert = ({ message, error = false }) => {
   if (message) {
     if (error) {
       return <div className="error">{message}</div>;
