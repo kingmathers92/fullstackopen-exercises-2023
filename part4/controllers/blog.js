@@ -6,10 +6,8 @@ const logger = require("../utils/logger");
 const blogsRouter = express.Router();
 
 blogsRouter.get("/", (request, response) => {
-  blogsRouter.get("/", (request, response) => {
-    Blog.find({}).then((blogs) => {
-      response.json(blogs);
-    });
+  Blog.find({}).then((blogs) => {
+    response.json(blogs);
   });
 });
 
