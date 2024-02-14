@@ -1,5 +1,6 @@
 const listHelper = require("../utils/list_helper");
 
+// Test suite for dummy function
 describe("dummy", () => {
   test("return one", () => {
     const blogs = [];
@@ -8,6 +9,7 @@ describe("dummy", () => {
   });
 });
 
+// Test suite for total likes function
 describe("total likes", () => {
   const listWithOneBlog = [
     {
@@ -26,6 +28,7 @@ describe("total likes", () => {
   });
 });
 
+// Test suite for favorite blog function
 describe("favorite blog", () => {
   const blogs = [
     { title: "Blog 1", author: "Author 1", likes: 10 },
@@ -44,6 +47,7 @@ describe("favorite blog", () => {
   });
 });
 
+// Test suite for most blogs function
 describe("most blogs", () => {
   const blogs = [
     { author: "Author 1" },
@@ -63,6 +67,7 @@ describe("most blogs", () => {
   });
 });
 
+// Test suite for most likes function
 describe("most likes", () => {
   const blogs = [
     { author: "Author 1", likes: 10 },

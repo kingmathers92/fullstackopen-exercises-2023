@@ -5,6 +5,7 @@ const config = require("./utils/config");
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 
+// Connect to MongoDB
 mongoose
   .connect(config.MONGO_URI, {
     useNewUrlParser: true,

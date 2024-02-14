@@ -1,3 +1,4 @@
+// Helper functions for list manipulation
 const _ = require("lodash");
 
 const dummy = (blogs) => {
