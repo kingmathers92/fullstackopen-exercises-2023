@@ -7,10 +7,13 @@ const logger = require("../utils/logger");
 const blogsRouter = express.Router();
 
 // GET route to fetch all blogs
-blogsRouter.get("/", (request, response) => {
-  Blog.find({}).then((blogs) => {
+blogsRouter.get("/", async (request, response) => {
+  try {
+    const blogs = await Blog.find({});
     response.json(blogs);
-  });
+  } catch (error) {
+    next(error);
+  }
 });
 
 // POST route to create a new blog
