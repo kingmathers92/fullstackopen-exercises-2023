@@ -1,4 +1,5 @@
 const Blog = require("../models/Blog");
+
 const initialBlogs = [
   {
     title: "Blog 1",
